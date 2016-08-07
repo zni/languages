@@ -1,3 +1,10 @@
+;; DFA matcher toy
+;;
+;; usage:
+;;      > (defvar matcher (make-dfa-matcher +dfa-def-acb+))
+;;      > (funcall matcher "aaaaaaaaaaccccccccccb")
+;;
+
 ;; definition for a*c*b
 (defconstant +dfa-def-acb+ '((0 1 2)
                              (#\a #\b #\c)
