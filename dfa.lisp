@@ -56,19 +56,16 @@
                 (in-state trans)))
         transition-table))))
 
-(defun next-state-gen (transition-table alphabet error-state)
+(defun make-next-state (transition-table alphabet error-state)
   "Generates the next-state closure for the matcher. The closure takes
    a character and state."
-    (flet ((translate-char (char)
-             (let ((index (position char alphabet)))
-               (if index
-                   index
-                   -1))))
+    (flet ((translate-index (char)
+             (position char alphabet)))
       (lambda (char state)
-        (let ((char-index (translate-char char)))
-          (if (= char-index -1)
-              error-state
-              (aref transition-table state char-index))))))
+        (let ((char-index (translate-index char)))
+          (if char-index
+              (aref transition-table state char-index)
+              error-state)))))
 
 (defun make-dfa-matcher (dfa)
   "Make a matcher from a DFA definition.  Returns a closure that takes
@@ -78,7 +75,7 @@
          (initial-state (initial-state dfa))
          (error-state (error-state dfa))
          (alphabet (alphabet dfa))
-         (next-state (next-state-gen table alphabet error-state)))
+         (next-state (make-next-state table alphabet error-state)))
     (flet ((error-statep (state)
              (= state error-state))
            (final-statep (state)
